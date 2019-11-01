@@ -1,9 +1,15 @@
 import hashlib
 import random
 import string
+from datetime import datetime
 
-NIBBLES = 8
+NIBBLES = 9
 HASHTABLE = {}
+
+def print_time():
+  # current date and time
+  now = datetime.now()
+  print("date-time: ", now)
 
 def my60sha(string, nibbles):
     h = hashlib.sha1(string.encode()).hexdigest()
@@ -20,12 +26,11 @@ def find_collision_random():
         h = my60sha(s, NIBBLES)
 
         # check for collision
-        for k, v in HASHTABLE.items():
-            if v == h and k != s: 
-                return k, s
+        v = HASHTABLE.get(h)
+        if v is not None:
+            return v, s
         
-        # if no collision found add to hash table
-        HASHTABLE[s] = h
+        HASHTABLE[h] = s
 
 def find_collision_recursive(initial_string):
 	# Start with an initial string
@@ -46,8 +51,11 @@ def find_collision_recursive(initial_string):
 		HASHTABLE[s] = h
 		initial_hash = h
 
-
-result = find_collision_recursive(randomStringDigits())
+print_time()
+result = find_collision_random()
+#result = find_collision_recursive(randomStringDigits())
 print (result)
+print_time()
 
 print(len(HASHTABLE.keys()))
+#print(HASHTABLE)
