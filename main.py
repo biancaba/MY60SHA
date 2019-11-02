@@ -3,7 +3,7 @@ import random
 import string
 from datetime import datetime
 
-NIBBLES = 9
+NIBBLES = 2
 HASHTABLE = {}
 
 def print_time():
@@ -58,4 +58,4 @@ print (result)
 print_time()
 
 print(len(HASHTABLE.keys()))
-#print(HASHTABLE)
+print(HASHTABLE)
