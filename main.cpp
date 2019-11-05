@@ -7,12 +7,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <fstream>
 
 using namespace std;
 
 int NIBBLES = 16;
 int BYTES = NIBBLES / 2;
-int S_LENGTH = 10;
+int S_LENGTH = 15;
+ofstream file;
 
 string my60sha(unsigned char* s, int nibbles){
     // Getting first bytes of SHA1 hash
@@ -45,28 +47,45 @@ string rand_string(size_t size)
 
 void find_collision(){
     map<string, string> map;
+    bool inMem = true;
     while(true){
         string s = rand_string(S_LENGTH);
         string hash = my60sha((unsigned char*)s.c_str(), NIBBLES);
         
         // Check for collision
         auto temp = map.find(hash);
-        if(temp != map.end()) {
-            printf("%s, %s\nmap size: %d\n", temp->second.c_str(), s.c_str(), map.size());
-            return;
+        if(temp != map.end()) 
+	{
+		string s1 = temp->second.c_str();
+		string s2 = s.c_str();
+		if(!s1.compare(s2) == 0){
+			file << s1 << "," << s2 << endl;
+           		return;
+		}
         }
 
-        // If hash not found, add to table
-        map[hash] = s;
+	if(inMem){
+		void* mem = malloc(100*1024*1024);
+		if(!mem){
+			inMem = false;
+		       	continue;
+		}
+		free(mem);
 
-        int size = map.size();
-        if(size % 1000 == 0){
-            printf("map size: %d\n", map.size());
-        }
+		// If hash not found, add to table
+		map[hash] = s;
+	}
+
+        //int size = map.size();
+        //if(size % 100000 == 0){
+	//	file << size << endl;
+        //}
     }
 }
 
 int main(){
+    file.open("output");
     srand(time(NULL) * NIBBLES);
     find_collision();
+    file.close();
 }
