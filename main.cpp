@@ -10,12 +10,12 @@
 
 using namespace std;
 
-int NIBBLES = 14;
+int NIBBLES = 16;
 int BYTES = NIBBLES / 2;
 int S_LENGTH = 10;
 
 string my60sha(unsigned char* s, int nibbles){
-    // Getting first nibbles of SHA1 hash
+    // Getting first bytes of SHA1 hash
     unsigned char sha_result[SHA_DIGEST_LENGTH];
     SHA1(s, strlen((char*)s), sha_result);
     string hash = string((char*)sha_result, BYTES);
@@ -58,6 +58,11 @@ void find_collision(){
 
         // If hash not found, add to table
         map[hash] = s;
+
+        int size = map.size();
+        if(size % 1000 == 0){
+            printf("map size: %d\n", map.size());
+        }
     }
 }
 
