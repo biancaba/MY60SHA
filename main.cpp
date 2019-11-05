@@ -54,32 +54,28 @@ void find_collision(){
         
         // Check for collision
         auto temp = map.find(hash);
-        if(temp != map.end()) 
-	{
-		string s1 = temp->second.c_str();
-		string s2 = s.c_str();
-		if(!s1.compare(s2) == 0){
-			file << s1 << "," << s2 << endl;
-           		return;
-		}
+        if(temp != map.end()) {
+            string s1 = temp->second.c_str();
+            string s2 = s.c_str();
+            // Check we did not generate the same string again
+            if(!s1.compare(s2) == 0){
+                file << s1 << "," << s2 << endl;
+                return;
+            }
         }
 
-	if(inMem){
-		void* mem = malloc(100*1024*1024);
-		if(!mem){
-			inMem = false;
-		       	continue;
-		}
-		free(mem);
+        // Check there is enough memory left
+        if(inMem){
+            void* mem = malloc(100*1024*1024);
+            if(!mem){
+                inMem = false;
+                continue;
+            }
+            free(mem);
 
-		// If hash not found, add to table
-		map[hash] = s;
-	}
-
-        //int size = map.size();
-        //if(size % 100000 == 0){
-	//	file << size << endl;
-        //}
+            // While in memory if collision not found, add to table
+            map[hash] = s;
+        }
     }
 }
 

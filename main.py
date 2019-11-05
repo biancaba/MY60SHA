@@ -56,6 +56,3 @@ result = find_collision_random()
 #result = find_collision_recursive(randomStringDigits())
 print (result)
 print_time()
-
-print(len(HASHTABLE.keys()))
-print(HASHTABLE)
