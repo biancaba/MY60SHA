@@ -13,7 +13,7 @@ using namespace std;
 
 int NIBBLES = 16;
 int BYTES = NIBBLES / 2;
-int S_LENGTH = 15;
+int S_LENGTH = 10;
 ofstream file;
 
 string my60sha(unsigned char* s, int nibbles){
@@ -47,11 +47,15 @@ string rand_string(size_t size)
 
 void find_collision(){
     map<string, string> map;
-    bool inMem = true;
+    bool add_to_map = true;
     while(true){
         string s = rand_string(S_LENGTH);
         string hash = my60sha((unsigned char*)s.c_str(), NIBBLES);
         
+        if(NIBBLES == 16){
+            hash.pop_back();
+        }
+
         // Check for collision
         auto temp = map.find(hash);
         if(temp != map.end()) {
@@ -64,17 +68,13 @@ void find_collision(){
             }
         }
 
-        // Check there is enough memory left
-        if(inMem){
-            void* mem = malloc(100*1024*1024);
-            if(!mem){
-                inMem = false;
-                continue;
-            }
-            free(mem);
-
+        if (!add_to_map) continue;
+        if (map.size() <= 140000000) {
             // While in memory if collision not found, add to table
             map[hash] = s;
+        } else {
+            printf("No longer adding to map\n");
+            add_to_map = false;
         }
     }
 }
